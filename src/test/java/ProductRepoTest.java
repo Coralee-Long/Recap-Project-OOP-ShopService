@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,29 +6,30 @@ class ProductRepoTest {
 
     @org.junit.jupiter.api.Test
     void getProducts() {
-        //GIVEN
+        // GIVEN
         ProductRepo repo = new ProductRepo();
+        repo.addProduct(new Product("1", "Apfel")); // Add a product
 
-        //WHEN
+        // WHEN
         List<Product> actual = repo.getProducts();
 
-        //THEN
-        List<Product> expected = new ArrayList<>();
-        expected.add(new Product("1", "Apfel"));
-        assertEquals(actual, expected);
+        // THEN
+        List<Product> expected = List.of(new Product("1", "Apfel")); // Expect the added product
+        assertEquals(expected, actual);
     }
 
     @org.junit.jupiter.api.Test
     void getProductById() {
-        //GIVEN
+        // GIVEN
         ProductRepo repo = new ProductRepo();
+        repo.addProduct(new Product("1", "Apfel")); // Add a product to the repo
 
-        //WHEN
-        Product actual = repo.getProductById("1");
+        // WHEN
+        Optional<Product> actual = repo.getProductById("1");
 
-        //THEN
-        Product expected = new Product("1", "Apfel");
-        assertEquals(actual, expected);
+        // THEN
+        assertTrue(actual.isPresent()); // Ensure the Optional is present
+        assertEquals(new Product("1", "Apfel"), actual.get()); // Check the product inside the Optional
     }
 
     @org.junit.jupiter.api.Test
@@ -45,19 +43,24 @@ class ProductRepoTest {
 
         //THEN
         Product expected = new Product("2", "Banane");
-        assertEquals(actual, expected);
-        assertEquals(repo.getProductById("2"), expected);
+
+        assertEquals(expected, actual); // Check the returned Product
+        Optional<Product> retrievedProduct = repo.getProductById("2"); // Retrieve using getProductById
+        assertTrue(retrievedProduct.isPresent()); // Ensure the Optional is not empty
+        assertEquals(expected, retrievedProduct.get()); // Compare the actual Product inside the Optional
     }
 
     @org.junit.jupiter.api.Test
     void removeProduct() {
-        //GIVEN
+        // GIVEN
         ProductRepo repo = new ProductRepo();
+        repo.addProduct(new Product("1", "Apfel")); // Add a product to the repo
 
-        //WHEN
+        // WHEN
         repo.removeProduct("1");
 
-        //THEN
-        assertNull(repo.getProductById("1"));
+        // THEN
+        Optional<Product> actual = repo.getProductById("1");
+        assertTrue(actual.isEmpty()); // Ensure the product is removed
     }
 }

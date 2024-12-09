@@ -25,17 +25,32 @@ class ShopServiceTest {
     }
 
     @Test
-    void addOrderTest_whenInvalidProductId_expectNull() {
-        //GIVEN
+    void addOrderTest_whenSingleInvalidProductId_expectException() {
+        // GIVEN
         ProductRepo productRepo = new ProductRepo();
         OrderRepo orderRepo = new OrderListRepo();
         ShopService shopService = new ShopService(productRepo, orderRepo);
-        List<String> productsIds = List.of("1", "2");
+        List<String> productIds = List.of("1"); // Only one invalid ID
 
-        //WHEN
-        Order actual = shopService.addOrder(productsIds);
+        // WHEN
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> shopService.addOrder(productIds));
 
-        //THEN
-        assertNull(actual);
+        // THEN
+        assertEquals("Product with id 1 does not exist!", exception.getMessage());
+    }
+
+    @Test
+    void addOrderTest_whenMultipleInvalidProductIds_expectExceptionForFirst() {
+        // GIVEN
+        ProductRepo productRepo = new ProductRepo();
+        OrderRepo orderRepo = new OrderListRepo();
+        ShopService shopService = new ShopService(productRepo, orderRepo);
+        List<String> productIds = List.of("1", "2", "3"); // Multiple invalid IDs
+
+        // WHEN
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> shopService.addOrder(productIds));
+
+        // THEN
+        assertEquals("Product with id 1 does not exist!", exception.getMessage());
     }
 }

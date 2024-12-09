@@ -15,12 +15,9 @@ public class ShopService {
     public Order addOrder(List<String> productIds) {
         List<Product> products = new ArrayList<>();
         for (String productId : productIds) {
-            // Optional<Product> productToOrderOpt = productRepo.getProductById(productId);
-
             Optional<Product> productToOrder = productRepo.getProductById(productId);
             if (productToOrder.isEmpty()) {
-                System.out.println("Product mit der Id: " + productId + " konnte nicht bestellt werden!");
-                return null;
+                throw new IllegalArgumentException("Product with id " + productId + " does not exist!");
             }
             products.add(productToOrder.get());
         }

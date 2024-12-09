@@ -53,4 +53,22 @@ class ShopServiceTest {
         // THEN
         assertEquals("Product with id 1 does not exist!", exception.getMessage());
     }
+
+    @Test
+    void updateOrder_updatesOrderStatusSuccessfully() {
+        // GIVEN
+        OrderRepo repo = new OrderListRepo();
+        Product product = new Product("1", "TestProduct");
+        Order order = new Order("123", List.of(product), OrderStatus.PROCESSING);
+        repo.addOrder(order);
+
+        ShopService shopService = new ShopService(new ProductRepo(), repo);
+
+        // WHEN
+        Order updatedOrder = shopService.updateOrderStatus("123", OrderStatus.PROCESSING);
+
+        // THEN
+        assertEquals(OrderStatus.PROCESSING, updatedOrder.status());
+        assertEquals(OrderStatus.PROCESSING, repo.getOrderById("123").status());
+    }
 }

@@ -35,7 +35,7 @@ class OrderListRepoTest {
         repo.addProduct(new Product("1", "Apfel")); // Add a product to the repo
 
         // WHEN
-        Optional<Product> actual = repo.getProductById("1");
+         Optional<Product> actual = repo.getProductById("1");
 
         // THEN
         assertTrue(actual.isPresent()); // Ensure the Optional is present

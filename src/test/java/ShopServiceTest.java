@@ -9,14 +9,17 @@ class ShopServiceTest {
     @Test
     void addOrderTest() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ProductRepo productRepo = new ProductRepo();
+        productRepo.addProduct(new Product("1", "Apfel"));
+        OrderRepo orderRepo = new OrderListRepo();
+        ShopService shopService = new ShopService(productRepo, orderRepo);
         List<String> productsIds = List.of("1");
 
         //WHEN
         Order actual = shopService.addOrder(productsIds);
 
         //THEN
-        Order expected = new Order("-1", List.of(new Product("1", "Apfel")));
+        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING);
         assertEquals(expected.products(), actual.products());
         assertNotNull(expected.id());
     }
@@ -24,7 +27,9 @@ class ShopServiceTest {
     @Test
     void addOrderTest_whenInvalidProductId_expectNull() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ProductRepo productRepo = new ProductRepo();
+        OrderRepo orderRepo = new OrderListRepo();
+        ShopService shopService = new ShopService(productRepo, orderRepo);
         List<String> productsIds = List.of("1", "2");
 
         //WHEN

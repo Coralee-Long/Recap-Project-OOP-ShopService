@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +20,12 @@ class ShopServiceTest {
         Order actual = shopService.addOrder(productsIds);
 
         //THEN
-        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING);
+        Order expected = new Order(
+                "-1",
+                List.of(new Product("1", "Apfel")),
+                OrderStatus.PROCESSING,
+                actual.timestamp() // Use the same timestamp as the generated Order
+        );
         assertEquals(expected.products(), actual.products());
         assertNotNull(expected.id());
     }
@@ -59,7 +65,12 @@ class ShopServiceTest {
         // GIVEN
         OrderRepo repo = new OrderListRepo();
         Product product = new Product("1", "TestProduct");
-        Order order = new Order("123", List.of(product), OrderStatus.PROCESSING);
+        Order order = new Order(
+                "123",
+                List.of(product),
+                OrderStatus.PROCESSING,
+                Instant.now() // Provide a timestamp
+        );
         repo.addOrder(order);
 
         ShopService shopService = new ShopService(new ProductRepo(), repo);

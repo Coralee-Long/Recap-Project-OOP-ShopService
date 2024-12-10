@@ -27,6 +27,8 @@ public class ShopService {
         return orderRepo.addOrder(newOrder);
     }
 
+
+
    //   Write a method that returns a list of all orders with a specific order status (parameter) using streams.
     public List<Order> getOrdersByOrderStatus(OrderStatus orderStatus) {
         // get all the orders from repo
@@ -36,5 +38,20 @@ public class ShopService {
         return orders.stream()
                 .filter(order -> order.status().equals(orderStatus))
                 .toList();
+    }
+
+    public Order updateOrderStatus(String orderId, OrderStatus newStatus) {
+       // fetch existing order from repo
+        Order order = orderRepo.getOrderById(orderId);
+        if (order == null) {
+            throw new IllegalArgumentException("Order with id " + orderId + " not found!");
+        }
+        // create a new Order with the updated status
+        Order updatedOrder = order.withStatus(newStatus);
+
+        // update repo with newly updated order
+        orderRepo.addOrder(updatedOrder);
+
+        return updatedOrder;
     }
 }
